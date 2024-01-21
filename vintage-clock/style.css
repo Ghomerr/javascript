@@ -1,0 +1,38 @@
+body {
+    margin: 0;
+    display: flex;
+    justify-content: stretch;
+    align-items: stretch;
+    background-color: black;
+}
+
+.clock {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-image: url(clock.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.niddle {
+    position: absolute;
+}
+
+#speed-niddle {
+    transform-origin: 9px 420px;
+}
+#big-niddle {
+    transform-origin: 36px 385px;
+}
+#small-niddle {
+    transform-origin: 44px 281px;
+}
+#date-display {
+    padding: 5px;
+    border: inset medium black;
+    position: absolute;
+}

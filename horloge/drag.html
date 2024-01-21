@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
+	<head>
+		<title>Test dragging</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<script src="drag.js"></script> 
+	</head>
+   
+	<body>
+		<h1>Drag Test</h1>
+		
+		<div id="window" style="position:absolute; z-index:10; left:350px; top:160px; width:400px; background-color:#dde3eb; border:1px solid #464f5a; " >
+			
+			<div style="padding-bottom:8px; width:400px; background-color:#718191; border-bottom:1px solid #464f5a;" onMouseDown="beginDrag(this.parentNode, event);">
+				<div style="position:absolute; top:2px; left:5px; font-size:16px; font-weight:bold; color:#FFFFFF;">Drag me!</div>
+			</div>
+			
+			<br/>
+		
+			<div style="margin-left:20px;">your content here...</div>
+			<div style="margin-left:30px;">your content here...</div>
+			<div style="margin-left:40px;">your content here...</div>
+			
+			<br/>
+		</div>
+
+	</body>
+</html>

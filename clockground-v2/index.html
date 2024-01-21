@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='fr' >
+	<head>
+		<title>Clock Ground</title>
+		<link rel="icon" href="favicon.ico" />
+		<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />
+		<script type='text/javascript' src='https://code.jquery.com/jquery-3.6.1.slim.min.js'></script>
+		<script type='text/javascript'>	
+			var RED = 0, GREEN = 1, BLUE = 2;
+			const firstTime = new Date;
+			var rgbTime = [
+				Math.round((firstTime.getHours()/24)*256),
+				Math.round((firstTime.getMinutes()/60)*256),
+				Math.round((firstTime.getSeconds()/60)*256)
+			];
+			var colorIndex = (rgbTime[RED] + rgbTime[GREEN] + rgbTime[BLUE]) % 3;
+			
+			function startClock() {
+				computeRgbTime();
+				setInterval(computeRgbTime, 1000);
+			}
+			
+			function computeRgbTime() {
+				const currentTime = new Date;
+				const formattedTime =
+				printFilledTime(currentTime.getHours()) + ':' + 
+				printFilledTime(currentTime.getMinutes()) + ':' + 
+				printFilledTime(currentTime.getSeconds());
+				
+				$('#time-value').text(formattedTime);
+				
+				const rgbValue = 'rgb' + '(' + rgbTime[RED] + ',' + rgbTime[GREEN] + ',' + rgbTime[BLUE] + ')';
+				$('body').css('background-color', rgbValue);
+				$('#rgb-time').text(rgbValue);
+				
+				$('body').css('color', 'rgb(' + (255 - rgbTime[RED]) + ',' + (255 - rgbTime[GREEN]) + ',' + (255 - rgbTime[BLUE]) + ')');
+				
+				colorIndex = updateNextRgbTime();
+			}
+
+			function printFilledTime(value) {
+				return (value > 9) ? '' + value : '0' + value;
+			}
+
+			function updateNextRgbTime() {
+				const nextColorIndex = (colorIndex + 1) % 3;
+				rgbTime[colorIndex]++;
+				rgbTime[nextColorIndex]--;
+				if (rgbTime[colorIndex] >= 255) {
+					rgbTime[colorIndex] = 255;
+					return nextColorIndex;
+				} else if (rgbTime[nextColorIndex] <= 0) {
+					rgbTime[nextColorIndex] = 0;
+					return nextColorIndex;
+				}
+				return colorIndex;
+			}
+			
+			$(document).ready(startClock);
+		</script>
+		<style>
+			@font-face {
+				font-family: 'Seven_Segment';
+				src: url('seven_segment.ttf') format('truetype');
+			}
+			#clock {
+				width: 100%;
+				overflow: hidden;
+			}
+			#time-value {
+				font-family: Seven_Segment;
+				font-size: 20em;
+				font-weight: bold;
+				position: relative;
+				left: 30%;
+			}
+			#rgb-time {
+				text-align: center;
+			}
+			#footer {
+				width: 100%;
+				text-align: center;
+				position: fixed;
+				bottom: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div id='clock'>
+			<div id='time-value'></div>
+			<div id='rgb-time'></div>
+		</div>
+		<div id="footer">
+			<div><em>This clock makes the colors change.</em></div>
+		</div>
+	</body>
+	
+</html>

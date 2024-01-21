@@ -1,0 +1,144 @@
+@font-face {
+    font-family: 'Seven_Segment';
+    src: url('seven_segment.ttf') format('truetype');
+}
+
+body,
+html {
+    margin: 0;
+    background-color: black;
+}
+
+.page-title {
+    width: 100%;
+    text-align: center;
+    font-size: 6vw;
+    font-family: Arial, Helvetica, sans-serif;
+    /*font-family: Seven_Segment;*/
+    font-weight: bold;
+    color: white;
+}
+
+.team-columns-container {
+    display: flex;
+    align-items: stretch;
+}
+
+.team-column {
+    flex-grow: 1;
+    text-align: center;
+    position: relative;
+    padding: 5px;
+    opacity: 0.5;
+}
+
+.team-column.is-running {
+    opacity: 1;
+}
+
+.color-picker-button {
+    z-index: 10;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    opacity: 0.25;
+}
+
+.color-picker-button:hover {
+    opacity: 1;
+}
+
+.color-picker-button>img {
+    width: auto;
+}
+
+.chrono-container {
+    position: relative;
+    text-align: center;
+}
+
+.chrono-value {
+    font-family: Seven_Segment;
+    position: absolute;
+    top: 46%;
+    left: 50%;
+    transform: translate(-48%, -50%);
+    font-size: 5vw;
+    border: none;
+    background-color: transparent;
+    text-align: center;
+    width: 35%
+}
+
+.chrono-value.finished {
+    color: red;
+}
+
+.chrono-container img {
+    width: 75%;
+}
+
+.team-input {
+    border: none;
+    background-color: transparent;
+    text-align: center;
+    font-weight: bold;
+    font-size: 3vw;
+    width: 95%;
+    padding: 0 5px;
+}
+
+.buttons-container {
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
+
+.buttons-container button {
+    font-family: Seven_Segment;
+    width: 120px;
+    height: 120px;
+    border-radius: 60px;
+    font-weight: bold;
+    font-size: 1.7vw;
+}
+
+.color-picker-pane {
+    display: none;
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+}
+
+.color-divs-container {
+    z-index: 200;
+    position: absolute;
+    top: 0px;
+    border: 1px solid white;
+    width: 80px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.color-div {
+    margin: 0;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+}
+
+.color-div:hover {
+    border: 1px solid #00fae5;
+    width: 18px;
+    height: 18px;
+}
+
+.color-div.selected {
+    border: 1px solid #1eff00;
+    width: 18px;
+    height: 18px;
+}

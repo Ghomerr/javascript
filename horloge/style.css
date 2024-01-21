@@ -1,0 +1,42 @@
+#window
+{
+	width:55px; 
+	background-color:#dde3eb; 
+	border:1px solid #464f5a;
+}
+
+#dragBorder
+{
+	background-color:#718191; 
+	border-bottom:1px solid black;
+}
+
+#dragText
+{
+	font-size:12px; 
+	font-weight:bold; 
+	color:#FFFFFF; 
+	text-align:center;
+}
+
+#window2
+{
+	width:70px; 
+	background-color:#dde3eb; 
+	border:1px solid #464f5a;
+}
+
+#dragBorder2
+{
+	background-color:#718191; 
+	border-bottom:1px solid black;
+}
+
+#dragText2
+{
+	font-size:12px; 
+	font-weight:bold; 
+	color:#FFFFFF; 
+	text-align:center;
+}
+

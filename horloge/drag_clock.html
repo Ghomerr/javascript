@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
+	<head>
+		<title>Dragging Clock Test</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<script type="text/javascript" src="clock.js"></script>
+		<script type="text/javascript" src="date.js"></script>
+		<script type="text/javascript" src="drag.js"></script> 
+		<link rel="stylesheet" media="screen" type="text/css" href="style.css" />
+	</head>
+   
+	<body onload="Clock_Start(), Date_Start()" >
+		<h1>Dragging Clock Test</h1>
+		
+		
+		
+		<div id="window" style="position:absolute; z-index:10; left:5px; top:5px; ">
+			
+			<div id="dragBorder" onMouseDown="beginDrag(this.parentNode, event);">
+				<div id="dragText" >Time</div>
+			</div>
+
+			<div id="clk"></div>
+
+		</div>
+		
+		<div id="window2" style="position:absolute; z-index:10; left:65px; top:5px; ">
+			
+			<div id="dragBorder2" onMouseDown="beginDrag(this.parentNode, event);">
+				<div id="dragText2" >Date</div>
+			</div>
+
+			<div id="date"></div>
+
+		</div>
+		
+	</body>
+</html>

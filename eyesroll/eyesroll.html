@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Eyes Roll</title>
+	</head>
+
+	<body>
+		<canvas id="myCanvas" width="800" height="600" style="border:1px solid #000000;position:absolute;top:0px;left:0px;maring:0;"></canvas>
+
+		<div style="position:absolute;right:40px;top:10px;">
+			Mouse: <span id="debugMouse"></span><br/>
+			DxDy: <span id="debugDxDy"></span><br/>
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+		window.rayonOeil = 25;
+		window.rayonPupille = 10;
+		window.diametreOeil = 2*window.rayonOeil;
+		window.dxGauche = 0;
+		window.dyGauche = 0;
+		window.dxDroit = 0;
+		window.dyDroit = 0; // modifier avec souris event
+		window.doublePI = 2*Math.PI;
+			
+		window.canvas = document.getElementById("myCanvas");
+		window.canvas.addEventListener("mousemove", doMouseMove, false); // Listener
+		window.ctx = window.canvas.getContext("2d");
+		
+		window.cWidth = window.canvas.width;
+		window.cHeight = window.canvas.height;
+		window.xCentre = window.cWidth/2;
+		window.yCentre = window.cHeight/2; // centre
+		window.xCentreGauche = window.xCentre-window.rayonOeil, window.xCentreDroit = window.xCentre+window.rayonOeil;
+	
+		function doMouseMove(event)
+		{
+			var mouseX = event.pageX, mouseY = event.pageY;
+			
+			// Debug
+			var el_debug = document.getElementById("debugMouse");
+			el_debug.innerHTML = "X=" + mouseX + ", Y=" + mouseY;
+			
+			// Calcul deltas 
+			doCalculDeltaXY(mouseX, mouseY, "xCentreGauche", "yCentre", "dxGauche", "dyGauche");
+			doCalculDeltaXY(mouseX, mouseY, "xCentreDroit", "yCentre", "dxDroit", "dyDroit");
+			
+			// M‡J Pupilles
+			doClearEyes();
+			doDrawFace();
+			doDrawEyes();
+		}
+		
+		function doCalculDeltaXY(mX, mY, cX, cY, dX, dY)
+		{
+			var A = mY - window[cY], B = mX - window[cX], C = Math.sqrt(A*A + B*B);
+			window[dX] = window.rayonPupille * B / C;
+			window[dY] = window.rayonPupille * A / C;
+		}
+		
+		function doDrawFace()
+		{
+			window.ctx.fillStyle = "yellow";
+			window.ctx.beginPath();
+			window.ctx.arc(window.xCentre, window.yCentre, 60, 0, window.doublePI); // arc(x,y,r,start,stop)
+			window.ctx.fill();
+		}
+		
+		function doDrawEyes()
+		{	
+			window.ctx.fillStyle = "white";
+			
+			// Oeil gauche
+			window.ctx.beginPath();
+			window.ctx.arc(window.xCentreGauche, window.yCentre, window.rayonOeil, 0, window.doublePI); // arc(x,y,r,start,stop)
+			window.ctx.fill();
+			
+			// Oeil droit
+			window.ctx.beginPath();
+			window.ctx.arc(window.xCentreDroit, window.yCentre, window.rayonOeil, 0, window.doublePI); // arc(x,y,r,start,stop)
+			window.ctx.fill();
+			
+			window.ctx.fillStyle = "black";
+			
+			// Pupille gauche
+			window.ctx.beginPath();
+			window.ctx.arc(window.xCentreGauche + window.dxGauche, window.yCentre + window.dyGauche, window.rayonPupille, 0, window.doublePI); // arc(x,y,r,start,stop)
+			window.ctx.fill();
+			
+			// Pupille droite
+			window.ctx.beginPath();
+			window.ctx.arc(window.xCentreDroit + window.dxDroit, window.yCentre + window.dyDroit, window.rayonPupille, 0, window.doublePI); // arc(x,y,r,start,stop)
+			ctx.fill();
+			
+			var el_dxdy = document.getElementById("debugDxDy");
+			el_dxdy.innerHTML = "dxG=" + Math.round(window.dxGauche) + ", dyG=" + Math.round(window.dyGauche) + ", dxD=" + Math.round(window.dxDroit) + ", dyD=" + Math.round(window.dyDroit);
+		}
+		
+		function doClearEyes()
+		{
+			window.ctx.fillStyle = "#FFFFFF";
+			window.ctx.fillRect(0,0,800,600);
+		}
+		
+		doDrawFace();
+		doDrawEyes();
+		
+	</script>
+</html>

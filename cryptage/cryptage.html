@@ -1,0 +1,468 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<style>
+		@font-face {
+		  font-family: 'ShadOgham';
+		  src:  url('fonts/ShadOgham.eot?wny74h');
+		  src:  url('fonts/ShadOgham.eot?wny74h#iefix') format('embedded-opentype'),
+			url('fonts/ShadOgham.ttf?wny74h') format('truetype'),
+			url('fonts/ShadOgham.woff?wny74h') format('woff'),
+			url('fonts/ShadOgham.svg?wny74h#ShadOgham') format('svg');
+		  font-weight: normal;
+		  font-style: normal;
+		}
+
+		[class^="ogh"], [class*=" ogh"] {
+		  /* use !important to prevent issues with browser extensions that change fonts */
+		  font-family: 'ShadOgham' !important;
+		  speak: none;
+		  font-style: normal;
+		  font-weight: normal;
+		  font-variant: normal;
+		  text-transform: none;
+		  line-height: 1;
+
+		  /* Better Font Rendering =========== */
+		  -webkit-font-smoothing: antialiased;
+		  -moz-osx-font-smoothing: grayscale;
+		}
+	</style>
+	
+	<!-- jQuery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- Bootstrap JS -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<!-- Clivou's scripts -->	
+	<script type="text/javascript">
+		cesarOffset = 0;
+		vigniereKey = "";
+		
+		oghamiqueAlpha = [
+			'ch', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'w', 'x', 'z', 'oi', 'ui', 'ch'
+		];
+		
+		oghamiqueToReverse = {};
+		reverseToCesar = {};
+		cesarToReverse = {};
+		viginereKeys = [];
+		
+		function preventCharacters(event, optionalChars) {
+			var key = event.keyCode;
+			// a-z, A-Z, espace, '.' et ',' : tout le reste, on preventDefault()
+			if ((key > 90 || key < 65) && (key > 122 || key < 97) && key !== 32 && optionalChars) {
+				event.preventDefault();
+			}
+		}
+		
+		$( document ).ready(function() {
+			initMappers();
+			$("#inputToCrypt").keypress(function(event) {
+				preventCharacters(event, event.keyCode !== 44 && event.keyCode !== 46);
+			});
+			
+			$("#inputToCrypt").keyup(function(event) {
+				if (!$("#inputToCrypt").val()) {
+					$('#btnCrypt').prop('disabled', true);
+				} else {
+					$('#btnCrypt').removeAttr('disabled');
+				}
+			});
+			
+			$("#inputToDecrypt").keypress(function(event) {
+				preventCharacters(event, event.keyCode !== 43 && event.keyCode !== 45);
+			});
+			
+			$("#inputToDecrypt").keyup(function(event) {
+				if (!$("#inputToDecrypt").val()) {
+					$('#btnDecrypt').prop('disabled', true);
+				} else {
+					$('#btnDecrypt').removeAttr('disabled');
+				}
+			});
+			$("#inputToDecrypt").change(function(event) {
+				if (!$("#inputToDecrypt").val()) {
+					$('#btnDecrypt').prop('disabled', true);
+				} else {
+					$('#btnDecrypt').removeAttr('disabled');
+				}
+			});
+			
+			$("#cesar").change(function(event) {
+				cesarOffset = Number($('#cesar').val());
+				initMappers();
+			});
+			$("#viginere").change(function(event) {
+				vigniereKey = $('#viginere').val();
+				initMappers();
+			});
+		});
+		
+		function initMappers() {
+			oghamiqueToReverse = {};
+			reverseToCesar = {};
+			cesarToReverse = {};
+			viginereKeys = [];
+			
+			cesarOffset = Number($('#cesar').val());
+			vigniereKey = $('#viginere').val();
+			if (console) console.log(cesarOffset, vigniereKey);
+		
+			for (var alphaIndex in oghamiqueAlpha) {
+				if (alphaIndex > 0 && oghamiqueAlpha.hasOwnProperty(alphaIndex)) {
+					var alpha = oghamiqueAlpha[alphaIndex];
+					var reverseAlpha = oghamiqueAlpha[oghamiqueAlpha.length - alphaIndex];
+					
+					oghamiqueToReverse[alpha] = {
+						key: Number(alphaIndex),
+						val: reverseAlpha
+					};
+					
+					var test = (cesarOffset - alphaIndex +1);
+					var index = test >= 0 ? test : oghamiqueAlpha.length + test -1;
+					reverseToCesar[reverseAlpha] = oghamiqueAlpha[index];
+					cesarToReverse[oghamiqueAlpha[index]] = reverseAlpha;
+				}
+			}
+			if (console) console.log(oghamiqueToReverse, reverseToCesar);
+			
+			
+			for (var k = 0 ; k < vigniereKey.length ; k++) {
+				viginereKeys[k] = oghamiqueToReverse[vigniereKey.charAt(k)].key;
+			}
+			if (console) console.log(viginereKeys);
+		}
+	
+		function crypter() {
+			var input = $('#inputToCrypt').val();
+			
+			var crypt1 = replaceConst(input.toLowerCase());
+			var crypt2 = reverse(crypt1, '#crypt2');
+			var crypt3 = cesar(crypt2);
+			var crypt4 = applyViginereKey(crypt3);
+			displayOghamic(crypt4);
+		}
+	
+		function resetKeys() {
+			$('#cesar').val(5);
+			$('#viginere').val('inquisitiondetruitgardien');
+			initMappers();
+		}
+	
+		function resetCrypt() {
+			$('#inputToCrypt').val('');
+			$('#crypt1').val('');
+			$('#crypt2').val('');
+			$('#crypt3').val('');
+			$('#crypt4').val('');
+			$('#ogham').val('');
+			$('#btnCrypt').prop('disabled', true);
+		}
+		
+		function resetDecrypt() {
+			$('#inputToDecrypt').val('');
+			$('#decrypt1').val('');
+			$('#decrypt2').val('');
+			$('#decrypt3').val('');
+			$('#decrypt4').val('');
+			$('#btnDecrypt').prop('disabled', true);
+		}
+	
+		function replaceConst(input) {
+			var crypt1 = input
+				.split('k').join('c')
+				.split('ph').join('f')
+				.split('y').join('h')
+				.split('j').join('i')
+				.split('v').join('u');
+			$('#crypt1').val(crypt1);
+			return crypt1;
+		}
+		
+		function isAllowedCharacter(currChar) {
+			return currChar != ' ' && currChar != ',' && currChar != '.' && currChar != '+' && currChar != '-' ;
+		}
+		
+		function reverse(input, output) {
+			var reverseInput = "";
+			for (var i = 0; i < input.length; i++) {
+				var currentChar = input.charAt(i);
+				if (isAllowedCharacter(currentChar)) {	
+					var twoLetters = currentChar + input.charAt(i+1);
+					var reverseChar;
+					if (oghamiqueToReverse.hasOwnProperty(twoLetters)) {
+						reverseChar = oghamiqueToReverse[twoLetters].val;
+						i++;
+					} else {
+						reverseChar = oghamiqueToReverse[currentChar].val;
+					}
+					reverseInput += reverseChar;
+					
+				} else {
+					reverseInput += currentChar;
+				}
+			}
+			
+			$(output).val(reverseInput);
+			return reverseInput;
+		}
+		
+		function cesar(input) {
+			var cesarInput = "";
+			for (var i = 0; i < input.length; i++) {
+				var currentChar = input.charAt(i);
+				if (isAllowedCharacter(currentChar)) {	
+					var twoLetters = currentChar + input.charAt(i+1);
+					var reverseChar;
+					if (reverseToCesar.hasOwnProperty(twoLetters)) {
+						reverseChar = reverseToCesar[twoLetters];
+						i++;
+					} else {
+						reverseChar = reverseToCesar[currentChar];
+					}
+					cesarInput += reverseChar;
+				} else {
+					cesarInput += currentChar;
+				}
+			}
+			$('#crypt3').val(cesarInput);
+			return cesarInput;
+		}
+		
+		function applyViginereKey(input) {
+			var viginereInput = "";
+			
+			var viginereKeyIndex = 0;
+			var newCharIndex = 0;
+			var reverseChar = {};
+			var newChar = '';
+			
+			for (var i = 0; i < input.length; i++) {
+				var currentChar = input.charAt(i);
+				if (isAllowedCharacter(currentChar)) {	
+					var twoLetters = currentChar + input.charAt(i+1);
+					
+					if (oghamiqueToReverse.hasOwnProperty(twoLetters)) {
+						reverseChar = oghamiqueToReverse[twoLetters];
+						i++;
+					} else {
+						reverseChar = oghamiqueToReverse[currentChar];
+					}
+					// On recupere l'index de la lettre a convertir + la lettre de la cle viginere
+					// -1 car on a deja un decalage
+					newCharIndex = reverseChar.key + viginereKeys[viginereKeyIndex++] -1;
+					
+					// On recupere la lettre corresopndante dans le tableau
+					newChar = oghamiqueAlpha[newCharIndex % (oghamiqueAlpha.length-1)];
+					
+					// On ajoute la lettre trouvee
+					viginereInput += newChar;
+					
+					// Controle de depassement
+					if (viginereKeyIndex >= viginereKeys.length) {
+						viginereKeyIndex = 0;
+					}
+				} else {
+					viginereInput += currentChar;
+				}
+			}
+			
+			// Remplacement virgules et points
+			viginereInput = viginereInput
+				.split(',').join('-')
+				.split('.').join('+++');
+			
+			$('#crypt4').val(viginereInput);
+			return viginereInput;
+		}
+		
+		function displayOghamic(input) {
+			var oghamic = input
+				.split('oi').join('j')
+				.split('ch').join('k')
+				.split('ui').join('v');
+			$('#ogham').val(oghamic);
+		}
+		
+		function copyStep4() {
+			var valCypt4 = $('#crypt4').val();
+			if (valCypt4) {
+				$('#inputToDecrypt').val(valCypt4);
+				$('#btnDecrypt').removeAttr('disabled');
+			}
+		}
+		
+		function decrypter() {
+			var input = $('#inputToDecrypt').val();
+			
+			// Au as ou on copie du oghamique
+			input = input
+				.split('k').join('ch')
+				.split('j').join('oi')
+				.split('v').join('ui');
+			
+			var decrypt1 = removeViginereKey(input);
+			var decrypt2 = unCesar(decrypt1);
+			var decrypt3 = reverse(decrypt2, '#decrypt3');
+		}
+		
+		function removeViginereKey(input) {
+			var viginereInput = "";
+			
+			var viginereKeyIndex = 0;
+			var newCharIndex = 0;
+			var reverseChar = {};
+			var newChar = '';
+			
+			for (var i = 0; i < input.length; i++) {
+				var currentChar = input.charAt(i);
+				if (isAllowedCharacter(currentChar)) {
+					var twoLetters = currentChar + input.charAt(i+1);
+					
+					if (oghamiqueToReverse.hasOwnProperty(twoLetters)) {
+						reverseChar = oghamiqueToReverse[twoLetters];
+						i++;
+					} else {
+						reverseChar = oghamiqueToReverse[currentChar];
+					}
+					// On recupere l'index de la lettre a convertir + la lettre de la cle viginere
+					// -1 car on a deja un decalage
+					newCharIndex = reverseChar.key - (viginereKeys[viginereKeyIndex++]-1);
+					
+					// On recupere la lettre corresopndante dans le tableau
+					var testIndex = newCharIndex <= 0 ? oghamiqueAlpha.length-1 + newCharIndex : newCharIndex;
+					newChar = oghamiqueAlpha[testIndex];
+					
+					// On ajoute la lettre trouvee
+					viginereInput += newChar;
+					
+					// Controle de depassement
+					if (viginereKeyIndex >= viginereKeys.length) {
+						viginereKeyIndex = 0;
+					}
+				} else {
+					viginereInput += currentChar;
+				}
+			}
+			
+			// Remplacement plus et tirers
+			viginereInput = viginereInput
+				.split('-').join(',')
+				.split('+++').join('.');
+			
+			$('#decrypt1').val(viginereInput);
+			return viginereInput;
+		}
+		
+		function unCesar(input) {
+			var cesarInput = "";
+			for (var i = 0; i < input.length; i++) {
+				var currentChar = input.charAt(i);
+				if (isAllowedCharacter(currentChar)) {
+					var twoLetters = currentChar + input.charAt(i+1);
+					var reverseChar;
+					if (cesarToReverse.hasOwnProperty(twoLetters)) {
+						reverseChar = cesarToReverse[twoLetters];
+						i++;
+					} else {
+						reverseChar = cesarToReverse[currentChar];
+					}
+					cesarInput += reverseChar;
+				} else {
+					cesarInput += currentChar;
+				}
+			}
+			$('#decrypt2').val(cesarInput);
+			return cesarInput;
+		}
+		
+	</script>
+	<title>Cryptage</title>
+</head>
+<body>
+	<h1 class="text-center">Cryptage</h1>
+	
+	<form class="form-inline text-center">
+		<div class="form-group">
+			<label for="input">Décalage César</label>
+			<input class="form-control" type="number" id="cesar" value="5" />
+		</div>
+		<div class="form-group">
+			<label for="input">Clé Viginere</label>
+			<input class="form-control" type="text" id="viginere" value="inquisitiondetruitgardien" />
+		</div>
+		<div class="form-group">
+			<input class="btn btn-default" type="button" value="Reset" onclick="javascript:resetKeys();"/>
+		</div>
+	</form>
+	
+	<hr/>
+	
+	<form class="form-inline text-center">
+		<div class="form-group">
+			<label for="input">Mot à coder</label>
+			<input class="form-control" type="text" id="inputToCrypt" placeholder="Texte à crypter" />
+			<input class="btn btn-primary" type="button" id="btnCrypt" value="Crypter" onclick="javascript:crypter();" disabled />
+			<input class="btn btn-default" type="button" value="Reset" onclick="javascript:resetCrypt();"/>
+		</div>
+	</form>
+	
+	<form class="form-horizontal">
+		<div class="form-group">
+			<label for="crypt1" class="col-sm-3 col-xs-5 control-label">Etape 1 (constantes)</label>
+			<div class="col-sm-8 col-xs-6"><input class="form-control" type="text" id="crypt1" disabled /></div>
+		</div>
+		<div class="form-group">
+			<label for="crypt2" class="col-sm-3 col-xs-5 control-label">Etape 2 (inversion)</label>
+			<div class="col-sm-8 col-xs-6"><input class="form-control" type="text" id="crypt2" disabled /></div>
+		</div>
+		<div class="form-group">
+			<label for="crypt3" class="col-sm-3 col-xs-5 control-label">Etape 3 (cesar)</label>
+			<div class="col-sm-8 col-xs-6"><input class="form-control" type="text" id="crypt3" disabled /></div>
+		</div>
+		<div class="form-group">
+			<label for="crypt4" class="col-sm-3 col-xs-5 control-label">Etape 4 (viginere)</label>
+			<div class="col-sm-8 col-xs-6"><input class="form-control" type="text" id="crypt4" disabled /></div>
+		</div>
+		<div class="form-group">
+			<label for="ogham" class="col-sm-3 col-xs-5 control-label">Oghamique</label>
+			<div class="col-sm-8 col-xs-6 ogh">
+				<input style="font-size: 30px" class="form-control" type="text" id="ogham" disabled />
+			</div>
+		</div>
+	</form>
+	
+	<hr/>
+	
+	<form class="form-inline text-center">
+		<div class="form-group">
+			<label for="input">Mot à décoder</label>
+			<div class="input-group" title="Copie le mot obtenu à l'étape 4 du codage">
+				<div class="input-group-addon">
+					<a href="javascript:void" onclick="javascript:copyStep4();"><span class="glyphicon glyphicon-copy"></span></a>
+				</div>
+				<input class="form-control" type="text" id="inputToDecrypt" placeholder="Texte à décrypter" />
+			</div>
+			<input class="btn btn-primary" type="button" id="btnDecrypt" value="Décrypter" onclick="javascript:decrypter();" disabled />
+			<input class="btn btn-default" type="button" value="Reset" onclick="javascript:resetDecrypt();"/>
+		</div>
+	</form>
+	
+	<form class="form-horizontal">
+		<div class="form-group">
+			<label for="decrypt1" class="col-sm-3 col-xs-5 control-label">Etape 1 (viginere)</label>
+			<div class="col-sm-8 col-xs-6"><input class="form-control" type="text" id="decrypt1" disabled /></div>
+		</div>
+		<div class="form-group">
+			<label for="decrypt2" class="col-sm-3 col-xs-5 control-label">Etape 2 (cesar)</label>
+			<div class="col-sm-8 col-xs-6"><input class="form-control" type="text" id="decrypt2" disabled /></div>
+		</div>
+		<div class="form-group">
+			<label for="decrypt3" class="col-sm-3 col-xs-5 control-label">Etape 3 (inversion)</label>
+			<div class="col-sm-8 col-xs-6"><input class="form-control" type="text" id="decrypt3" disabled /></div>
+		</div>
+	</form>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>TRIPTYQUE</title>
+    <script src="jquery.js"></script>
+    <script src="scripts.js"></script>
+    <link href="style.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="page-title">TRIPTYQUE</div>
+    <div class="team-columns-container">
+        <div class="team-column first-team">
+            <div class="color-picker-button" team="FIRST-CHRONO">
+                <img src="color-picker.png" alt="color picker" />
+            </div>
+            <div class="chrono-container">
+                <img src="green_chrono.png" alt="First Chrono" />
+                <input type="text" size="5" maxlength="5" id="FIRST-CHRONO" class="chrono-value" />
+            </div>
+            <div><input id="first-team-input" class="team-input" type="text" value="Equipe 1" /></div>
+        </div>
+        <div class="team-column middle-team">
+            <div class="color-picker-button" team="MIDDLE-CHRONO">
+                <img src="color-picker.png" alt="color picker" />
+            </div>
+            <div class="chrono-container">
+                <img src="blue_chrono.png" alt="Middle Chrono" />
+                <input type="text" size="5" maxlength="5" id="MIDDLE-CHRONO" class="chrono-value" />
+            </div>
+            <div><input id="middle-team-input" class="team-input" type="text" value="Equipe 2" /></div>
+        </div>
+        <div class="team-column last-team">
+            <div class="color-picker-button" team="LAST-CHRONO">
+                <img src="color-picker.png" alt="color picker" />
+            </div>
+            <div class="chrono-container">
+                <img src="red_chrono.png" alt="Last Chrono" />
+                <input type="text" size="5" maxlength="5" id="LAST-CHRONO" class="chrono-value" />
+            </div>
+            <div><input id="last-team-input" class="team-input" type="text" value="Equipe 3" /></div>
+        </div>
+    </div>
+    <div class="buttons-container">
+        <button id="next-button">START</button>
+        <button id="freeze-button">PAUSE</button>
+    </div>
+
+    <div class="color-picker-pane" id="color-picker-pane">
+        <div class="color-divs-container"></div>
+    </div>
+</body>
+
+</html>

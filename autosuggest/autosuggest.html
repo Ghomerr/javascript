@@ -1,0 +1,80 @@
+<html>
+	<header>
+		<title>AutoSuggest</title>
+		<script type="text/javascript">
+			var dico = ['salaires', 'ébarbure', 'modifias', 'acclames', 'cinérite', 'victoria', 'révoquez', 'accompli', 'manucure', 'professa', 'lynchera', 'ramagera', 'grilloir', 'remettez', 'déventas', 'saoudien', 'inimités', 'achevait', 'ferrâmes', 'rénettes', 'hâlerait', 'gourerai', 'gâteront', 'dégondez', 'pipeline', 'renviait', 'éméchons', 'crassons', 'comptiez', 'mévendus', 'ouatinés', 'perfuser', 'surcroît', 'loculeux', 'réarmiez', 'trépidas', 'détendue', 'caviarde', 'ébarbage', 'oospores', 'sablâtes', 'rôdaillé', 'barcasse', 'délaissé', 'opticien', 'réaléser', 'paieront', 'facturât', 'méfasses', 'détaxais', 'baladais', 'sucrases', 'accourci', 'gorgones', 'avariait', 'palpions', 'labrador', 'rasseyes', 'riflards', 'trématât', 'obviasse', 'mordorât', 'fécondée', 'suroffre', 'décordai', 'aplatira', 'grivelez', 'grondées', 'mandatas', 'habanera', 'tricotés', 'ignoriez', 'furetait', 'rocquent', 'enfaîtés', 'extrorse', 'réunifie', 'jodleras', 'fissurée', 'anxiétés', 'fientons', 'incubent', 'étêtâmes', 'frisonne', 'parodiât', 'malmenez', 'détissas', 'manégées', 'régatons', 'filonien', 'aviserez', 'plieront', 'vestiges', 'abrasion', 'déchirez', 'répugnas', 'mazoutai', 'dioramas', 'termines', 'relatant', 'râbleras', 'mammouth', 'câlinera', 'semences', 'puisette', 'effaçant', 'bonnette', 'émorfila', 'caletiez', 'tomerons', 'dateries', 'tonsuras', 'bonifies', 'additifs', 'théières', 'ronciers', 'émouvras', 'roselets', 'harponne', 'coinçant', 'espaçant', 'récoltas', 'fiscales', 'vaccinai', 'ionisait', 'effritât', 'requêter', 'baratiné', 'lézardai', 'sidérais', 'servante', 'devancer', 'grinchée', 'saignera', 'salirent', 'dégoutte', 'dépulpai', 'délabrée', 'subornât', 'mutismes', 'devisant', 'étamâmes', 'trissant', 'chantier', 'userions', 'girondin', 'repêchât', 'flattait', 'terreurs', 'ligueuse'];
+		
+			function suggest(input_obj)
+			{
+				var input_value = input_obj ? input_obj.value : "";
+				var suggest_div = document.getElementById("suggest_div");
+				
+				if (input_value && suggest_div)
+				{
+					var divHTML = "";
+					for (var i in dico)
+					{
+						if (dico[i].indexOf(input_value) == 0)
+						{
+							var dico_word = dico[i];
+							divHTML += '<span onclick="javascript:selectSuggestion(this);">' 
+							+ '<span style="display:none;">' + dico_word + '</span>'
+							// + dico_word 
+							+ '<strong>' + dico_word.substr(0, input_value.length) + '</strong>'
+							+ dico_word.substr(input_value.length)
+							+ '</span><br/>';
+						}
+					}
+					
+					if (divHTML)
+					{
+						suggest_div.style.display = "block";
+						suggest_div.innerHTML = divHTML;
+					}
+					else
+					{
+						suggest_div.innerHTML = "<em>Aucun résultat</em>";
+					}
+				}
+				else if (suggest_div)
+				{
+					suggest_div.style.display = "none";
+					suggest_div.innerHTML = "";
+				}
+				else
+				{
+					alert("Error: " + suggest_div + " ; " + input_suggest);
+				}
+			}
+			
+			function selectSuggestion(suggested_obj)
+			{
+				var suggest_div = document.getElementById("suggest_div");
+				var input_suggest = document.getElementById("input_suggest");
+				
+				if (suggest_div && input_suggest)
+				{
+					var select_value = suggested_obj.firstChild.firstChild.data;
+					suggest_div.style.display = "none";
+					suggest_div.innerHTML = "";
+					input_suggest.value = select_value;
+				}
+				else
+				{
+					alert("Error: " + suggest_div + " ; " + input_suggest);
+				}
+			}
+		</script>
+	</header>
+	
+	<body>
+		<h1>AutoSuggest</h1>
+		<div>
+			<input type="text" id="input_suggest" onkeyup="javascript:suggest(this);" size="8" maxlength="8" /><input type="button" value="Clear" onclick="javascript:this.previousSibling.value='';suggest();" /><br/>
+			<div id="suggest_div" style="border:1px black solid;display:none;width=100px;">
+			
+			</div>
+			
+		</div>
+	</body>
+</html>
