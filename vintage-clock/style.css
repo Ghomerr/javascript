@@ -31,8 +31,13 @@ body {
 #small-niddle {
     transform-origin: 44px 281px;
 }
-#date-display {
+#date-display, #chrono-display {
     padding: 5px;
     border: inset medium black;
     position: absolute;
+    width: 130px;
+}
+
+#date-display {
+    text-align: right;
 }

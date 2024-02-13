@@ -4,6 +4,8 @@ const MONTHS = [
 ];
 const DAYS = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
 
+let chronoValue = 0;
+
 function displayNiddles(speedNiddle, bigNiddle, smallNiddle) {
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
@@ -31,6 +33,23 @@ function displayDate(dateDisplay) {
     dateDisplay.text(dayOfWeek + ' ' + day + ' ' + month);
 }
 
+function pad(value) {
+    return value < 10 ? '0' + value : value;
+}
+
+function displayChrono(chronoDisplay) {
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    chronoDisplay.css('top', centerY - 17);
+    chronoDisplay.css('right', centerX + 80);
+
+    chronoValue++;
+    const hours = Math.floor(chronoValue / 3600);
+    const minutes = Math.floor(chronoValue % 3600 / 60);
+    const seconds = chronoValue - (hours * 3600 + minutes * 60);
+    chronoDisplay.text(pad(hours) + ':' + pad(minutes) + ':' + pad(seconds));
+}
+
 function updateTime(speedNiddle, bigNiddle, smallNiddle) {
     const currentTime = new Date;
     
@@ -52,9 +71,11 @@ $(document).ready(() => {
     const smallNiddle = $('#small-niddle');
     const speedNiddle = $('#speed-niddle');
     const dateDisplay = $('#date-display');
+    const chronoDisplay = $('#chrono-display');
 
     displayNiddles(speedNiddle, bigNiddle, smallNiddle);
     displayDate(dateDisplay);
+    displayChrono(chronoDisplay);
     $(window).resize(() => {
         displayNiddles(speedNiddle, bigNiddle, smallNiddle);
         displayDate(dateDisplay);
@@ -63,5 +84,6 @@ $(document).ready(() => {
     updateTime(speedNiddle, bigNiddle, smallNiddle);
     setInterval(() => {
         updateTime(speedNiddle, bigNiddle, smallNiddle);
+        displayChrono(chronoDisplay);
     }, 1000);
 });
